@@ -1,6 +1,7 @@
 # DimaTech
 
-Асинхронное REST API приложение на `FastAPI`, `SQLAlchemy 2.x`, `PostgreSQL`, `Redis` и `Docker Compose`.
+Асинхронное REST API приложение на `FastAPI`, `SQLAlchemy 2.x`,
+`PostgreSQL` и `Docker Compose`.
 
 ## Что реализовано
 
@@ -11,7 +12,7 @@
 - просмотр администратором списка пользователей вместе со счетами
 - обработка платежного вебхука с проверкой `signature`
 - идемпотентность по `transaction_id`
-- кеширование чтений через Redis с инвалидацией после мутаций
+- простое LRU-кеширование чтений в памяти процесса
 - миграция с тестовыми данными
 - `Makefile` с `make lint` и `make test`
 
@@ -40,6 +41,17 @@ docker compose up --build
 
 Миграции применяются автоматически в `entrypoint`.
 
+Перед запуском нужно создать `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Для Docker Compose используются значения:
+
+- `DOCKER_DATABASE_URL`
+- `DOCKER_DATABASE_URL_SYNC`
+
 ### Остановка
 
 ```bash
@@ -58,7 +70,6 @@ docker compose down -v
 
 - Python `3.12+`
 - PostgreSQL `16+`
-- Redis `7+`
 
 ### Подготовка окружения
 
@@ -74,7 +85,18 @@ cp .env.example .env
 CREATE DATABASE dimatech;
 ```
 
-При необходимости скорректируйте параметры подключения в `.env`.
+В `.env` нужно заполнить обязательные параметры приложения:
+
+- `DATABASE_URL`
+- `DATABASE_URL_SYNC`
+- `DOCKER_DATABASE_URL`
+- `DOCKER_DATABASE_URL_SYNC`
+- `JWT_SECRET_KEY`
+- `JWT_ALGORITHM`
+- `ACCESS_TOKEN_EXPIRE_MINUTES`
+- `PAYMENT_SIGNATURE_SECRET`
+- `CACHE_TTL_SECONDS`
+- `CACHE_MAX_SIZE`
 
 ### Миграции
 
@@ -97,6 +119,8 @@ make lint
 make test
 make migrate
 make format
+make down
+make clear
 ```
 
 ## Пример логина

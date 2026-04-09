@@ -1,20 +1,20 @@
-PYTHON := .venv/bin/python
-RUFF := .venv/bin/ruff
-MYPY := .venv/bin/mypy
-PYTEST := .venv/bin/pytest
-ALEMBIC := .venv/bin/alembic
-
-.PHONY: lint format test migrate
+.PHONY: lint format test migrate down clear
 
 lint:
-	$(RUFF) check src tests main.py migrations
-	$(MYPY) src tests
+	.venv/bin/ruff check src tests main.py migrations
+	.venv/bin/mypy src tests
 
 format:
-	$(RUFF) format src tests main.py migrations
+	.venv/bin/ruff format src tests main.py migrations
 
 test:
-	$(PYTEST)
+	.venv/bin/pytest
 
 migrate:
-	$(ALEMBIC) upgrade head
+	.venv/bin/alembic upgrade head
+
+down:
+	docker compose down
+
+clear:
+	docker compose down -v
