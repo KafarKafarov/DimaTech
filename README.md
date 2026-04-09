@@ -38,7 +38,7 @@ docker compose up --build
 - API: `http://localhost:8000`
 - Swagger UI: `http://localhost:8000/docs`
 
-Миграции применяются автоматически в `entrypoint`.
+Миграции применяются автоматически стартовой командой контейнера.
 
 Перед запуском нужно создать `.env`:
 
