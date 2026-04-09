@@ -1,9 +1,10 @@
 """Маршруты пользователя."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dimatech.api.dependencies import get_current_user, get_session
+from dimatech.api.docs import build_error_response
 from dimatech.db.models import Account, Payment, User
 from dimatech.repositories.account import AccountRepository
 from dimatech.repositories.payment import PaymentRepository
@@ -28,7 +29,20 @@ def build_payments_payload(*, payments: list[Payment]) -> list[PaymentRead]:
 	return payload
 
 
-@router.get('/me/accounts', response_model=list[AccountRead])
+@router.get(
+	'/me/accounts',
+	response_model=list[AccountRead],
+	status_code=status.HTTP_200_OK,
+	summary='Получение списка своих счетов',
+	description='Возвращает все счета текущего пользователя и их текущие балансы.',
+	response_description='Список счетов текущего пользователя.',
+	responses={
+		status.HTTP_401_UNAUTHORIZED: build_error_response(
+			description='Пользователь не аутентифицирован или токен недействителен.',
+			detail='Отсутствует токен доступа.',
+		),
+	},
+)
 async def list_my_accounts(
 	current_user: User = Depends(get_current_user),
 	session: AsyncSession = Depends(get_session),
@@ -39,7 +53,23 @@ async def list_my_accounts(
 	return build_accounts_payload(accounts=accounts)
 
 
-@router.get('/me/payments', response_model=list[PaymentRead])
+@router.get(
+	'/me/payments',
+	response_model=list[PaymentRead],
+	status_code=status.HTTP_200_OK,
+	summary='Получение списка своих платежей',
+	description=(
+		'Возвращает платежи текущего пользователя '
+		'в обратном хронологическом порядке.'
+	),
+	response_description='Список платежей текущего пользователя.',
+	responses={
+		status.HTTP_401_UNAUTHORIZED: build_error_response(
+			description='Пользователь не аутентифицирован или токен недействителен.',
+			detail='Отсутствует токен доступа.',
+		),
+	},
+)
 async def list_my_payments(
 	current_user: User = Depends(get_current_user),
 	session: AsyncSession = Depends(get_session),
