@@ -9,7 +9,10 @@ from dimatech.core.config import Settings
 from dimatech.schemas.payment import PaymentWebhookRequest, PaymentWebhookResponse
 from dimatech.services.payment import PaymentWebhookService
 
-router = APIRouter(prefix='/payments', tags=['payments'])
+router = APIRouter(
+	prefix='/payments',
+	tags=['payments'],
+)
 
 
 @router.post(
@@ -43,5 +46,8 @@ async def process_payment_webhook(
 	settings: Settings = Depends(get_settings_dependency),
 ) -> PaymentWebhookResponse:
 	"""Обрабатывает вебхук от внешней платежной системы."""
-	service = PaymentWebhookService(session=session, settings=settings)
+	service = PaymentWebhookService(
+		session=session,
+		settings=settings,
+	)
 	return await service.process(payload=payload)

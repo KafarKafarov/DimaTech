@@ -112,8 +112,16 @@ class UserUpdateRequest(BaseModel):
 	)
 
 	email: EmailStr | None = None
-	full_name: str | None = Field(default=None, min_length=1, max_length=255)
-	password: str | None = Field(default=None, min_length=8, max_length=128)
+	full_name: str | None = Field(
+		default=None,
+		min_length=1,
+		max_length=255,
+	)
+	password: str | None = Field(
+		default=None,
+		min_length=8,
+		max_length=128,
+	)
 	is_active: bool | None = None
 
 

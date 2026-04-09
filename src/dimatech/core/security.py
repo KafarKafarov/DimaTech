@@ -19,12 +19,23 @@ def hash_password(password: str) -> str:
 	return password_hasher.hash(password=password)
 
 
-def verify_password(password: str, password_hash: str) -> bool:
+def verify_password(
+		password: str,
+		password_hash: str,
+) -> bool:
 	"""Проверяет пароль относительно сохраненного хеша."""
-	return password_hasher.verify(password=password, hash=password_hash)
+	return password_hasher.verify(
+		password=password,
+		hash=password_hash,
+	)
 
 
-def create_access_token(*, user_id: int, role: str, settings: Settings) -> str:
+def create_access_token(
+		*,
+		user_id: int,
+		role: str,
+		settings: Settings,
+) -> str:
 	"""Создает JWT-токен доступа."""
 	expires_at = datetime.now(tz=UTC) + timedelta(
 		minutes=settings.access_token_expire_minutes
@@ -41,7 +52,11 @@ def create_access_token(*, user_id: int, role: str, settings: Settings) -> str:
 	)
 
 
-def decode_access_token(*, token: str, settings: Settings) -> dict[str, str]:
+def decode_access_token(
+		*,
+		token: str,
+		settings: Settings,
+) -> dict[str, str]:
 	"""Декодирует JWT и возвращает полезную нагрузку."""
 	try:
 		payload = jwt.decode(

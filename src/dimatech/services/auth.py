@@ -11,12 +11,22 @@ from dimatech.schemas.auth import AuthUserRead, TokenResponse
 class AuthService:
 	"""Отвечает за аутентификацию пользователей."""
 
-	def __init__(self, *, settings: Settings, user_repository: UserRepository) -> None:
+	def __init__(
+			self,
+			*,
+			settings: Settings,
+			user_repository: UserRepository,
+	) -> None:
 		"""Сохраняет зависимости сервиса."""
 		self._settings = settings
 		self._user_repository = user_repository
 
-	async def login(self, *, email: str, password: str) -> TokenResponse:
+	async def login(
+			self,
+			*,
+			email: str,
+			password: str,
+	) -> TokenResponse:
 		"""Проверяет учетные данные и возвращает токен доступа."""
 		user = await self._user_repository.get_by_email(email=email)
 		if user is None or not user.is_active:

@@ -27,8 +27,14 @@ class PaymentWebhookRequest(BaseModel):
 		max_length=64,
 		description='Уникальный идентификатор транзакции во внешней системе.',
 	)
-	user_id: int = Field(gt=0, description='Идентификатор пользователя.')
-	account_id: int = Field(gt=0, description='Идентификатор счета пользователя.')
+	user_id: int = Field(
+		gt=0,
+		description='Идентификатор пользователя.',
+	)
+	account_id: int = Field(
+		gt=0,
+		description='Идентификатор счета пользователя.',
+	)
 	amount: Decimal = Field(
 		gt=0,
 		max_digits=12,

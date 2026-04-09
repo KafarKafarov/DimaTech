@@ -18,7 +18,10 @@ from dimatech.services.user import UserService
 router = APIRouter(prefix='/admin', tags=['admin'])
 
 
-def build_users_payload(*, users: list[User]) -> list[UserWithAccountsRead]:
+def build_users_payload(
+		*,
+		users: list[User],
+) -> list[UserWithAccountsRead]:
 	"""Преобразует ORM-модели пользователей в ответ API."""
 	payload: list[UserWithAccountsRead] = []
 	for user in users:

@@ -40,9 +40,13 @@ async def login(
 ) -> TokenResponse:
 	"""Авторизует пользователя по email и паролю."""
 	service = AuthService(
-		settings=settings, user_repository=UserRepository(session=session)
+		settings=settings,
+		user_repository=UserRepository(session=session),
 	)
-	return await service.login(email=str(payload.email), password=payload.password)
+	return await service.login(
+		email=str(payload.email),
+		password=payload.password,
+	)
 
 
 @router.get(
@@ -61,6 +65,8 @@ async def login(
 		),
 	},
 )
-async def get_me(current_user: User = Depends(get_current_user)) -> UserRead:
+async def get_me(
+		current_user: User = Depends(get_current_user),
+) -> UserRead:
 	"""Возвращает данные текущего пользователя."""
 	return UserRead.model_validate(current_user)

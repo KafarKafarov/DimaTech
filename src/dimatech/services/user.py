@@ -23,9 +23,15 @@ class UserService:
 		self._session = session
 		self._user_repository = user_repository
 
-	async def create_user(self, *, payload: UserCreateRequest) -> User:
+	async def create_user(
+			self,
+			*,
+			payload: UserCreateRequest,
+	) -> User:
 		"""Создает пользователя и фиксирует изменения."""
-		existing_user = await self._user_repository.get_by_email(email=payload.email)
+		existing_user = await self._user_repository.get_by_email(
+			email=payload.email,
+		)
 		if existing_user is not None:
 			raise HTTPException(
 				status_code=status.HTTP_409_CONFLICT,
@@ -41,7 +47,12 @@ class UserService:
 		await self._session.refresh(user)
 		return user
 
-	async def update_user(self, *, user_id: int, payload: UserUpdateRequest) -> User:
+	async def update_user(
+			self,
+			*,
+			user_id: int,
+			payload: UserUpdateRequest,
+	) -> User:
 		"""Частично обновляет пользователя."""
 		user = await self._user_repository.get_by_id(user_id=user_id)
 		if user is None:
@@ -80,7 +91,11 @@ class UserService:
 		await self._session.refresh(user)
 		return user
 
-	async def delete_user(self, *, user_id: int) -> None:
+	async def delete_user(
+			self,
+			*,
+			user_id: int,
+	) -> None:
 		"""Удаляет пользователя по идентификатору."""
 		user = await self._user_repository.get_by_id(user_id=user_id)
 		if user is None:

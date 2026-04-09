@@ -26,7 +26,10 @@ class WebhookSignaturePayload(TypedDict):
 	amount: int | str | Decimal
 
 
-def format_amount_for_signature(*, amount: Decimal) -> str:
+def format_amount_for_signature(
+		*,
+		amount: Decimal,
+) -> str:
 	"""Нормализует сумму для формирования подписи без экспоненциальной записи."""
 	normalized = format(amount.normalize(), 'f')
 	if '.' not in normalized:
@@ -78,7 +81,9 @@ class PaymentWebhookService:
 		self._user_repository = UserRepository(session=session)
 
 	async def process(
-		self, *, payload: PaymentWebhookRequest
+			self,
+			*,
+			payload: PaymentWebhookRequest,
 	) -> PaymentWebhookResponse:
 		"""Проверяет подпись, обеспечивает идемпотентность и начисляет средства."""
 		expected_signature = build_webhook_signature(
@@ -111,7 +116,8 @@ class PaymentWebhookService:
 		account = await self._ensure_account(payload=payload)
 		try:
 			await self._account_repository.add_amount(
-				account=account, amount=payload.amount
+				account=account,
+				amount=payload.amount,
 			)
 			await self._payment_repository.create(
 				transaction_id=payload.transaction_id,
@@ -142,7 +148,11 @@ class PaymentWebhookService:
 			transaction_id=payload.transaction_id,
 		)
 
-	async def _ensure_account(self, *, payload: PaymentWebhookRequest) -> Account:
+	async def _ensure_account(
+			self,
+			*,
+			payload: PaymentWebhookRequest,
+	) -> Account:
 		"""Возвращает существующий счет пользователя или создает новый."""
 		account = await self._account_repository.get_by_id(
 			account_id=payload.account_id

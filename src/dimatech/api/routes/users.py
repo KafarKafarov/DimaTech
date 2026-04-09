@@ -10,10 +10,16 @@ from dimatech.repositories.account import AccountRepository
 from dimatech.repositories.payment import PaymentRepository
 from dimatech.schemas.user import AccountRead, PaymentRead
 
-router = APIRouter(prefix='/users', tags=['users'])
+router = APIRouter(
+	prefix='/users',
+	tags=['users'],
+)
 
 
-def build_accounts_payload(*, accounts: list[Account]) -> list[AccountRead]:
+def build_accounts_payload(
+		*,
+		accounts: list[Account],
+) -> list[AccountRead]:
 	"""Преобразует список ORM-счетов в ответ API."""
 	payload: list[AccountRead] = []
 	for account in accounts:
@@ -21,7 +27,10 @@ def build_accounts_payload(*, accounts: list[Account]) -> list[AccountRead]:
 	return payload
 
 
-def build_payments_payload(*, payments: list[Payment]) -> list[PaymentRead]:
+def build_payments_payload(
+		*,
+		payments: list[Payment],
+) -> list[PaymentRead]:
 	"""Преобразует список ORM-платежей в ответ API."""
 	payload: list[PaymentRead] = []
 	for payment in payments:

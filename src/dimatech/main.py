@@ -17,10 +17,15 @@ def build_lifespan(settings: Settings) -> Lifespan[FastAPI]:
 	"""Создает lifespan с замкнутыми настройками приложения."""
 
 	@asynccontextmanager
-	async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+	async def lifespan(
+			app: FastAPI,
+	) -> AsyncIterator[None]:
 		"""Подготавливает инфраструктурные зависимости приложения."""
 		database = DatabaseManager()
-		database.initialize(database_url=settings.database_url, echo=settings.debug)
+		database.initialize(
+			database_url=settings.database_url,
+			echo=settings.debug,
+		)
 		app.state.settings = settings
 		app.state.database = database
 		yield
@@ -29,7 +34,9 @@ def build_lifespan(settings: Settings) -> Lifespan[FastAPI]:
 	return lifespan
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(
+		settings: Settings | None = None,
+) -> FastAPI:
 	"""Создает и конфигурирует экземпляр приложения."""
 	app_settings = settings or get_settings()
 	app = FastAPI(

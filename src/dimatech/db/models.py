@@ -38,16 +38,36 @@ class User(TimestampMixin, Base):
 
 	__tablename__ = 'users'
 
-	id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-	email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-	full_name: Mapped[str] = mapped_column(String(255), nullable=False)
-	password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+	id: Mapped[int] = mapped_column(
+		primary_key=True,
+		autoincrement=True,
+	)
+	email: Mapped[str] = mapped_column(
+		String(255),
+		unique=True,
+		nullable=False,
+	)
+	full_name: Mapped[str] = mapped_column(
+		String(255),
+		nullable=False,
+	)
+	password_hash: Mapped[str] = mapped_column(
+		String(255),
+		nullable=False,
+	)
 	role: Mapped[UserRole] = mapped_column(
-		Enum(UserRole, native_enum=False, length=16),
+		Enum(
+			UserRole,
+			native_enum=False,
+			length=16,
+		),
 		default=UserRole.USER,
 		nullable=False,
 	)
-	is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+	is_active: Mapped[bool] = mapped_column(
+		default=True,
+		nullable=False,
+	)
 
 	accounts: Mapped[list['Account']] = relationship(
 		back_populates='user',
@@ -66,14 +86,23 @@ class Account(TimestampMixin, Base):
 
 	__tablename__ = 'accounts'
 
-	id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+	id: Mapped[int] = mapped_column(
+		primary_key=True,
+		autoincrement=True,
+	)
 	user_id: Mapped[int] = mapped_column(
-		ForeignKey(column='users.id', ondelete='CASCADE'),
+		ForeignKey(
+			column='users.id',
+			ondelete='CASCADE',
+		),
 		index=True,
 		nullable=False,
 	)
 	balance: Mapped[Decimal] = mapped_column(
-		Numeric(precision=12, scale=2),
+		Numeric(
+			precision=12,
+			scale=2,
+		),
 		default=Decimal('0.00'),
 		nullable=False,
 	)
@@ -91,7 +120,10 @@ class Payment(TimestampMixin, Base):
 
 	__tablename__ = 'payments'
 
-	id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+	id: Mapped[int] = mapped_column(
+		primary_key=True,
+		autoincrement=True,
+	)
 	transaction_id: Mapped[str] = mapped_column(
 		String(64),
 		unique=True,

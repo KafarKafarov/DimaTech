@@ -11,11 +11,19 @@ from dimatech.db.models import Payment
 class PaymentRepository:
 	"""Инкапсулирует операции над платежами."""
 
-	def __init__(self, *, session: AsyncSession) -> None:
+	def __init__(
+			self,
+			*,
+			session: AsyncSession,
+	) -> None:
 		"""Сохраняет ссылку на сессию."""
 		self._session = session
 
-	async def list_by_user_id(self, *, user_id: int) -> list[Payment]:
+	async def list_by_user_id(
+			self,
+			*,
+			user_id: int,
+	) -> list[Payment]:
 		"""Возвращает платежи пользователя в обратном хронологическом порядке."""
 		query: Select[tuple[Payment]] = (
 			select(Payment)
@@ -25,7 +33,11 @@ class PaymentRepository:
 		result = await self._session.execute(query)
 		return list(result.scalars().all())
 
-	async def get_by_transaction_id(self, *, transaction_id: str) -> Payment | None:
+	async def get_by_transaction_id(
+			self,
+			*,
+			transaction_id: str,
+	) -> Payment | None:
 		"""Ищет платеж по внешнему идентификатору транзакции."""
 		query: Select[tuple[Payment]] = select(Payment)
 		query = query.where(Payment.transaction_id == transaction_id)

@@ -18,9 +18,17 @@ class DatabaseManager:
 		self._engine: AsyncEngine | None = None
 		self._session_factory: async_sessionmaker[AsyncSession] | None = None
 
-	def initialize(self, *, database_url: str, echo: bool) -> None:
+	def initialize(
+			self,
+			*,
+			database_url: str,
+			echo: bool,
+	) -> None:
 		"""Создает engine и фабрику сессий."""
-		self._engine = create_async_engine(url=database_url, echo=echo)
+		self._engine = create_async_engine(
+			url=database_url,
+			echo=echo,
+		)
 		self._session_factory = async_sessionmaker(
 			bind=self._engine,
 			autoflush=False,

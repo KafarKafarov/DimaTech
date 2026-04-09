@@ -16,12 +16,16 @@ from dimatech.repositories.user import UserRepository
 http_bearer = HTTPBearer(auto_error=False)
 
 
-def get_settings_dependency(request: Request) -> Settings:
+def get_settings_dependency(
+		request: Request,
+) -> Settings:
 	"""Возвращает настройки приложения из состояния FastAPI."""
 	return cast(Settings, request.app.state.settings)
 
 
-async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
+async def get_session(
+		request: Request,
+) -> AsyncIterator[AsyncSession]:
 	"""Возвращает асинхронную SQLAlchemy-сессию."""
 	database = cast(DatabaseManager, request.app.state.database)
 	async for session in database.session():
@@ -41,7 +45,10 @@ async def get_current_user(
 		)
 
 	try:
-		payload = decode_access_token(token=credentials.credentials, settings=settings)
+		payload = decode_access_token(
+			token=credentials.credentials,
+			settings=settings,
+		)
 	except TokenPayloadError as error:
 		raise HTTPException(
 			status_code=status.HTTP_401_UNAUTHORIZED,
@@ -59,7 +66,9 @@ async def get_current_user(
 	return user
 
 
-async def get_admin_user(current_user: User = Depends(get_current_user)) -> User:
+async def get_admin_user(
+		current_user: User = Depends(get_current_user),
+) -> User:
 	"""Проверяет, что текущий пользователь обладает ролью администратора."""
 	if current_user.role is not UserRole.ADMIN:
 		raise HTTPException(

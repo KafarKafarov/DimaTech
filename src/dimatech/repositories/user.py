@@ -10,17 +10,29 @@ from dimatech.db.models import User, UserRole
 class UserRepository:
 	"""Инкапсулирует операции над пользователями."""
 
-	def __init__(self, *, session: AsyncSession) -> None:
+	def __init__(
+			self,
+			*,
+			session: AsyncSession,
+	) -> None:
 		"""Сохраняет ссылку на сессию."""
 		self._session = session
 
-	async def get_by_id(self, *, user_id: int) -> User | None:
+	async def get_by_id(
+			self,
+			*,
+			user_id: int,
+	) -> User | None:
 		"""Возвращает пользователя по идентификатору."""
 		query: Select[tuple[User]] = select(User).where(User.id == user_id)
 		result = await self._session.execute(query)
 		return result.scalar_one_or_none()
 
-	async def get_by_email(self, *, email: str) -> User | None:
+	async def get_by_email(
+			self,
+			*,
+			email: str,
+	) -> User | None:
 		"""Возвращает пользователя по email."""
 		query: Select[tuple[User]] = select(User).where(User.email == email)
 		result = await self._session.execute(query)
@@ -53,6 +65,10 @@ class UserRepository:
 		await self._session.flush()
 		return user
 
-	async def delete(self, *, user: User) -> None:
+	async def delete(
+			self,
+			*,
+			user: User,
+	) -> None:
 		"""Удаляет пользователя."""
 		await self._session.delete(user)
