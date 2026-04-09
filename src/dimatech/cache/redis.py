@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import cast
 
 from redis.asyncio import Redis
 
@@ -53,7 +54,7 @@ class RedisCache(BaseCache):
 
     async def get(self, key: str) -> str | None:
         """Возвращает строковое значение из Redis."""
-        return await self._client.get(name=key)
+        return cast(str | None, await self._client.get(name=key))
 
     async def set(self, key: str, value: str, *, ttl_seconds: int) -> None:
         """Сохраняет значение с TTL."""

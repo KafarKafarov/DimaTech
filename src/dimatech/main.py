@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import cast
 
 from fastapi import FastAPI
+from starlette.types import Lifespan
 
 from dimatech.api.router import api_router
 from dimatech.cache.redis import BaseCache, build_cache
@@ -13,7 +15,7 @@ from dimatech.core.config import Settings, get_settings
 from dimatech.db.session import DatabaseManager
 
 
-def build_lifespan(settings: Settings) -> Callable[[FastAPI], AsyncIterator[None]]:
+def build_lifespan(settings: Settings) -> Lifespan[FastAPI]:
     """Создает lifespan с замкнутыми настройками приложения."""
 
     @asynccontextmanager
@@ -52,4 +54,4 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
 def get_cache_from_app(app: FastAPI) -> BaseCache:
     """Возвращает инстанс кеша, сохраненный в состоянии приложения."""
-    return app.state.cache
+    return cast(BaseCache, app.state.cache)
