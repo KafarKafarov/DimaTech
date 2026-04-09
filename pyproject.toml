@@ -27,6 +27,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "aiosqlite>=0.20.0",
+  "asgi-lifespan>=2.1.0",
   "fakeredis>=2.31.0",
   "mypy>=1.15.0",
   "pytest>=8.3.5",
@@ -79,4 +80,8 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["jwt.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["asgi_lifespan.*", "fakeredis.*"]
 ignore_missing_imports = true

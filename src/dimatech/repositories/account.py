@@ -24,6 +24,12 @@ class AccountRepository:
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
+    async def get_by_id(self, *, account_id: int) -> Account | None:
+        """Ищет счет по идентификатору."""
+        query: Select[tuple[Account]] = select(Account).where(Account.id == account_id)
+        result = await self._session.execute(query)
+        return result.scalar_one_or_none()
+
     async def get_by_id_and_user_id(self, *, account_id: int, user_id: int) -> Account | None:
         """Ищет счет по идентификатору и владельцу."""
         query: Select[tuple[Account]] = select(Account).where(

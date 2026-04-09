@@ -6,19 +6,28 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from dimatech.cache.redis import BaseCache
 from dimatech.core.security import hash_password
 from dimatech.db.models import User
 from dimatech.repositories.user import UserRepository
 from dimatech.schemas.user import UserCreateRequest, UserUpdateRequest
+from dimatech.services.cache import CacheInvalidationService
 
 
 class UserService:
     """Сервис операций над пользователями."""
 
-    def __init__(self, *, session: AsyncSession, user_repository: UserRepository) -> None:
+    def __init__(
+        self,
+        *,
+        session: AsyncSession,
+        user_repository: UserRepository,
+        cache: BaseCache,
+    ) -> None:
         """Сохраняет зависимости сервиса."""
         self._session = session
         self._user_repository = user_repository
+        self._cache_invalidation = CacheInvalidationService(cache=cache)
 
     async def create_user(self, *, payload: UserCreateRequest) -> User:
         """Создает пользователя и фиксирует изменения."""
@@ -36,6 +45,7 @@ class UserService:
         )
         await self._session.commit()
         await self._session.refresh(user)
+        await self._cache_invalidation.invalidate_admin_users()
         return user
 
     async def update_user(self, *, user_id: int, payload: UserUpdateRequest) -> User:
@@ -73,6 +83,7 @@ class UserService:
             ) from error
 
         await self._session.refresh(user)
+        await self._cache_invalidation.invalidate_user_related(user_id=user.id)
         return user
 
     async def delete_user(self, *, user_id: int) -> None:
@@ -86,3 +97,4 @@ class UserService:
 
         await self._user_repository.delete(user=user)
         await self._session.commit()
+        await self._cache_invalidation.invalidate_user_related(user_id=user_id)
