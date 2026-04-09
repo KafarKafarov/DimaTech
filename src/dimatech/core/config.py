@@ -27,8 +27,6 @@ class Settings(BaseSettings):
 	access_token_expire_minutes: int
 
 	payment_signature_secret: str
-	cache_ttl_seconds: int
-	cache_max_size: int
 
 
 @lru_cache

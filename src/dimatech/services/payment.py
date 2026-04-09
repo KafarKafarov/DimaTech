@@ -9,14 +9,12 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dimatech.cache.memory import BaseCache
 from dimatech.core.config import Settings
 from dimatech.db.models import Account
 from dimatech.repositories.account import AccountRepository
 from dimatech.repositories.payment import PaymentRepository
 from dimatech.repositories.user import UserRepository
 from dimatech.schemas.payment import PaymentWebhookRequest, PaymentWebhookResponse
-from dimatech.services.cache import CacheInvalidationService
 
 
 class WebhookSignaturePayload(TypedDict):
@@ -71,7 +69,6 @@ class PaymentWebhookService:
 		*,
 		session: AsyncSession,
 		settings: Settings,
-		cache: BaseCache,
 	) -> None:
 		"""Сохраняет зависимости сервиса."""
 		self._session = session
@@ -79,7 +76,6 @@ class PaymentWebhookService:
 		self._account_repository = AccountRepository(session=session)
 		self._payment_repository = PaymentRepository(session=session)
 		self._user_repository = UserRepository(session=session)
-		self._cache_invalidation = CacheInvalidationService(cache=cache)
 
 	async def process(
 		self, *, payload: PaymentWebhookRequest
@@ -140,7 +136,6 @@ class PaymentWebhookService:
 				detail='Не удалось обработать платеж из-за конфликта данных.',
 			) from None
 
-		await self._cache_invalidation.invalidate_user_related(user_id=payload.user_id)
 		return PaymentWebhookResponse(
 			status='processed',
 			account_id=account.id,

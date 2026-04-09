@@ -12,7 +12,6 @@
 - просмотр администратором списка пользователей вместе со счетами
 - обработка платежного вебхука с проверкой `signature`
 - идемпотентность по `transaction_id`
-- простое LRU-кеширование чтений в памяти процесса
 - миграция с тестовыми данными
 - `Makefile` с `make lint` и `make test`
 
@@ -75,7 +74,8 @@ docker compose down -v
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -e '.[dev]'
+source .venv/bin/activate
+python -m pip install -e '.[dev]'
 cp .env.example .env
 ```
 
@@ -95,19 +95,17 @@ CREATE DATABASE dimatech;
 - `JWT_ALGORITHM`
 - `ACCESS_TOKEN_EXPIRE_MINUTES`
 - `PAYMENT_SIGNATURE_SECRET`
-- `CACHE_TTL_SECONDS`
-- `CACHE_MAX_SIZE`
 
 ### Миграции
 
 ```bash
-.venv/bin/alembic upgrade head
+python -m alembic upgrade head
 ```
 
 ### Запуск приложения
 
 ```bash
-.venv/bin/uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
 Приложение будет доступно по адресу `http://localhost:8000`.

@@ -30,8 +30,6 @@ def test_settings(tmp_path: Path) -> Settings:
 		jwt_algorithm='HS256',
 		access_token_expire_minutes=60,
 		payment_signature_secret='test-payment-secret',
-		cache_ttl_seconds=60,
-		cache_max_size=128,
 	)
 
 

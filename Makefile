@@ -1,17 +1,19 @@
+PYTHON ?= python3
+
 .PHONY: lint format test migrate down clear
 
 lint:
-	.venv/bin/ruff check src tests main.py migrations
-	.venv/bin/mypy src tests
+	$(PYTHON) -m ruff check src tests main.py migrations
+	$(PYTHON) -m mypy src tests
 
 format:
-	.venv/bin/ruff format src tests main.py migrations
+	$(PYTHON) -m ruff format src tests main.py migrations
 
 test:
-	.venv/bin/pytest
+	$(PYTHON) -m pytest
 
 migrate:
-	.venv/bin/alembic upgrade head
+	$(PYTHON) -m alembic upgrade head
 
 down:
 	docker compose down

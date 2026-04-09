@@ -7,7 +7,6 @@ from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dimatech.cache.memory import BaseCache
 from dimatech.core.config import Settings
 from dimatech.core.security import TokenPayloadError, decode_access_token
 from dimatech.db.models import User, UserRole
@@ -20,11 +19,6 @@ http_bearer = HTTPBearer(auto_error=False)
 def get_settings_dependency(request: Request) -> Settings:
 	"""Возвращает настройки приложения из состояния FastAPI."""
 	return cast(Settings, request.app.state.settings)
-
-
-def get_cache_dependency(request: Request) -> BaseCache:
-	"""Возвращает кеш-прослойку из состояния приложения."""
-	return cast(BaseCache, request.app.state.cache)
 
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
