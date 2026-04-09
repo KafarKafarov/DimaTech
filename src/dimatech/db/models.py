@@ -68,12 +68,12 @@ class Account(TimestampMixin, Base):
 
 	id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 	user_id: Mapped[int] = mapped_column(
-		ForeignKey('users.id', ondelete='CASCADE'),
+		ForeignKey(column='users.id', ondelete='CASCADE'),
 		index=True,
 		nullable=False,
 	)
 	balance: Mapped[Decimal] = mapped_column(
-		Numeric(12, 2),
+		Numeric(precision=12, scale=2),
 		default=Decimal('0.00'),
 		nullable=False,
 	)
@@ -98,16 +98,19 @@ class Payment(TimestampMixin, Base):
 		nullable=False,
 	)
 	user_id: Mapped[int] = mapped_column(
-		ForeignKey('users.id', ondelete='CASCADE'),
+		ForeignKey(column='users.id', ondelete='CASCADE'),
 		index=True,
 		nullable=False,
 	)
 	account_id: Mapped[int] = mapped_column(
-		ForeignKey('accounts.id', ondelete='CASCADE'),
+		ForeignKey(column='accounts.id', ondelete='CASCADE'),
 		index=True,
 		nullable=False,
 	)
-	amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+	amount: Mapped[Decimal] = mapped_column(Numeric(
+		precision=12,
+		scale=2,
+	), nullable=False)
 
 	user: Mapped[User] = relationship(back_populates='payments')
 	account: Mapped['Account'] = relationship(back_populates='payments')

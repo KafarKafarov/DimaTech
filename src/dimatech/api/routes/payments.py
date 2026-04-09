@@ -13,7 +13,7 @@ router = APIRouter(prefix='/payments', tags=['payments'])
 
 
 @router.post(
-	'/webhook',
+	path='/webhook',
 	response_model=PaymentWebhookResponse,
 	status_code=status.HTTP_200_OK,
 	summary='Обработка платежного вебхука',
@@ -21,7 +21,6 @@ router = APIRouter(prefix='/payments', tags=['payments'])
 		'Проверяет подпись вебхука, создает счет при отсутствии, '
 		'фиксирует платеж и начисляет сумму на баланс.'
 	),
-	response_description='Результат обработки платежной транзакции.',
 	responses={
 		status.HTTP_400_BAD_REQUEST: build_error_response(
 			description='Подпись вебхука не прошла проверку.',

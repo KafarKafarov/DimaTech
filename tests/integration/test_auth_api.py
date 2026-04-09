@@ -15,7 +15,10 @@ async def test_login_ok(client: AsyncClient) -> None:
 		password='user12345',
 	)
 
-	response = await client.get('/api/v1/auth/me', headers=auth_headers(token=token))
+	response = await client.get(
+		url='/api/v1/auth/me',
+		headers=auth_headers(token=token),
+	)
 
 	assert response.status_code == HTTPStatus.OK
 	assert response.json() == {
@@ -29,7 +32,7 @@ async def test_login_ok(client: AsyncClient) -> None:
 async def test_login_bad_pass(client: AsyncClient) -> None:
 	"""Неверный пароль должен приводить к 401."""
 	response = await client.post(
-		'/api/v1/auth/login',
+		url='/api/v1/auth/login',
 		json={'email': 'user@example.com', 'password': 'wrong-pass'},
 	)
 
@@ -48,7 +51,7 @@ async def test_me_no_token(client: AsyncClient) -> None:
 async def test_me_bad_token(client: AsyncClient) -> None:
 	"""Некорректный токен должен приводить к 401."""
 	response = await client.get(
-		'/api/v1/auth/me',
+		url='/api/v1/auth/me',
 		headers=auth_headers(token='broken-token'),
 	)
 

@@ -16,7 +16,7 @@ async def test_admin_list_ok(client: AsyncClient) -> None:
 	)
 
 	response = await client.get(
-		'/api/v1/admin/users',
+		url='/api/v1/admin/users',
 		headers=auth_headers(token=token),
 	)
 
@@ -40,7 +40,7 @@ async def test_admin_forbidden(client: AsyncClient) -> None:
 	)
 
 	response = await client.get(
-		'/api/v1/admin/users',
+		url='/api/v1/admin/users',
 		headers=auth_headers(token=token),
 	)
 
@@ -58,7 +58,7 @@ async def test_admin_crud_ok(client: AsyncClient) -> None:
 	headers = auth_headers(token=token)
 
 	create_response = await client.post(
-		'/api/v1/admin/users',
+		url='/api/v1/admin/users',
 		headers=headers,
 		json={
 			'email': 'new-user@example.com',
@@ -70,7 +70,7 @@ async def test_admin_crud_ok(client: AsyncClient) -> None:
 	user_id = create_response.json()['id']
 
 	update_response = await client.patch(
-		f'/api/v1/admin/users/{user_id}',
+		url=f'/api/v1/admin/users/{user_id}',
 		headers=headers,
 		json={'full_name': 'Обновленное имя', 'is_active': False},
 	)
@@ -79,7 +79,7 @@ async def test_admin_crud_ok(client: AsyncClient) -> None:
 	assert update_response.json()['email'] == 'new-user@example.com'
 
 	delete_response = await client.delete(
-		f'/api/v1/admin/users/{user_id}',
+		url=f'/api/v1/admin/users/{user_id}',
 		headers=headers,
 	)
 
@@ -95,7 +95,7 @@ async def test_admin_create_dup(client: AsyncClient) -> None:
 	)
 
 	response = await client.post(
-		'/api/v1/admin/users',
+		url='/api/v1/admin/users',
 		headers=auth_headers(token=token),
 		json={
 			'email': 'user@example.com',
@@ -117,7 +117,7 @@ async def test_admin_update_missing(client: AsyncClient) -> None:
 	)
 
 	response = await client.patch(
-		'/api/v1/admin/users/999',
+		url='/api/v1/admin/users/999',
 		headers=auth_headers(token=token),
 		json={'full_name': 'Не найден'},
 	)
@@ -135,7 +135,7 @@ async def test_admin_delete_missing(client: AsyncClient) -> None:
 	)
 
 	response = await client.delete(
-		'/api/v1/admin/users/999',
+		url='/api/v1/admin/users/999',
 		headers=auth_headers(token=token),
 	)
 

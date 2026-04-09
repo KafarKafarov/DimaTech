@@ -30,12 +30,11 @@ def build_payments_payload(*, payments: list[Payment]) -> list[PaymentRead]:
 
 
 @router.get(
-	'/me/accounts',
+	path='/me/accounts',
 	response_model=list[AccountRead],
 	status_code=status.HTTP_200_OK,
 	summary='Получение списка своих счетов',
 	description='Возвращает все счета текущего пользователя и их текущие балансы.',
-	response_description='Список счетов текущего пользователя.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',
@@ -54,7 +53,7 @@ async def list_my_accounts(
 
 
 @router.get(
-	'/me/payments',
+	path='/me/payments',
 	response_model=list[PaymentRead],
 	status_code=status.HTTP_200_OK,
 	summary='Получение списка своих платежей',
@@ -62,7 +61,6 @@ async def list_my_accounts(
 		'Возвращает платежи текущего пользователя '
 		'в обратном хронологическом порядке.'
 	),
-	response_description='Список платежей текущего пользователя.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',

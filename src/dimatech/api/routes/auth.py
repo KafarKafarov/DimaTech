@@ -20,12 +20,11 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 
 
 @router.post(
-	'/login',
+	path='/login',
 	response_model=TokenResponse,
 	status_code=status.HTTP_200_OK,
 	summary='Аутентификация по email и паролю',
 	description='Проверяет учетные данные пользователя и возвращает JWT access token.',
-	response_description='Токен доступа и данные аутентифицированного пользователя.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Неверные учетные данные или пользователь деактивирован.',
@@ -47,7 +46,7 @@ async def login(
 
 
 @router.get(
-	'/me',
+	path='/me',
 	response_model=UserRead,
 	status_code=status.HTTP_200_OK,
 	summary='Получение профиля текущего пользователя',
@@ -55,7 +54,6 @@ async def login(
 		'Возвращает публичные данные пользователя, '
 		'извлеченного из access token.'
 	),
-	response_description='Профиль текущего аутентифицированного пользователя.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',

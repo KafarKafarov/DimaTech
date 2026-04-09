@@ -17,7 +17,7 @@ async def test_flow_topup(client: AsyncClient) -> None:
 	admin_headers = auth_headers(token=admin_token)
 
 	create_response = await client.post(
-		'/api/v1/admin/users',
+		url='/api/v1/admin/users',
 		headers=admin_headers,
 		json={
 			'email': 'flow-user@example.com',
@@ -36,11 +36,11 @@ async def test_flow_topup(client: AsyncClient) -> None:
 	user_headers = auth_headers(token=user_token)
 
 	accounts_before = await client.get(
-		'/api/v1/users/me/accounts',
+		url='/api/v1/users/me/accounts',
 		headers=user_headers,
 	)
 	payments_before = await client.get(
-		'/api/v1/users/me/payments',
+		url='/api/v1/users/me/payments',
 		headers=user_headers,
 	)
 	assert accounts_before.status_code == HTTPStatus.OK
@@ -49,7 +49,7 @@ async def test_flow_topup(client: AsyncClient) -> None:
 	assert payments_before.json() == []
 
 	webhook_response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json=build_webhook_body(
 			transaction_id='tx-flow-topup',
 			user_id=user_id,
@@ -66,14 +66,17 @@ async def test_flow_topup(client: AsyncClient) -> None:
 	}
 
 	accounts_after = await client.get(
-		'/api/v1/users/me/accounts',
+		url='/api/v1/users/me/accounts',
 		headers=user_headers,
 	)
 	payments_after = await client.get(
-		'/api/v1/users/me/payments',
+		url='/api/v1/users/me/payments',
 		headers=user_headers,
 	)
-	admin_list = await client.get('/api/v1/admin/users', headers=admin_headers)
+	admin_list = await client.get(
+		url='/api/v1/admin/users',
+		headers=admin_headers,
+	)
 
 	assert accounts_after.status_code == HTTPStatus.OK
 	assert accounts_after.json() == [

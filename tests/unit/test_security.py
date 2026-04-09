@@ -19,8 +19,14 @@ def test_hash_ok() -> None:
 	"""Хеш пароля должен успешно проходить обратную проверку."""
 	password_hash = hash_password('secret-pass-123')
 
-	assert verify_password('secret-pass-123', password_hash)
-	assert not verify_password('wrong-pass', password_hash)
+	assert verify_password(
+		password='secret-pass-123',
+		password_hash=password_hash,
+	)
+	assert not verify_password(
+		password='wrong-pass',
+		password_hash=password_hash,
+	)
 
 
 def test_token_roundtrip(test_settings: Settings) -> None:

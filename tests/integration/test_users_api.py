@@ -16,7 +16,7 @@ async def test_accounts_ok(client: AsyncClient) -> None:
 	)
 
 	response = await client.get(
-		'/api/v1/users/me/accounts',
+		url='/api/v1/users/me/accounts',
 		headers=auth_headers(token=token),
 	)
 
@@ -39,7 +39,7 @@ async def test_payments_empty(client: AsyncClient) -> None:
 	)
 
 	response = await client.get(
-		'/api/v1/users/me/payments',
+		url='/api/v1/users/me/payments',
 		headers=auth_headers(token=token),
 	)
 

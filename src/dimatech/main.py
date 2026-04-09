@@ -45,12 +45,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 	)
 
 	@app.get(
-		'/health',
+		path='/health',
 		tags=['health'],
 		summary='Проверка доступности сервиса',
 		description='Служебная ручка для smoke-проверок и healthcheck контейнера.',
 		response_model=HealthcheckResponse,
-		response_description='Сервис доступен и готов принимать запросы.',
 		status_code=status.HTTP_200_OK,
 	)
 	async def healthcheck() -> HealthcheckResponse:

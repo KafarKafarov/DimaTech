@@ -12,7 +12,7 @@ from dimatech.services.payment import WebhookSignaturePayload, build_webhook_sig
 async def authenticate(*, client: AsyncClient, email: str, password: str) -> str:
 	"""Выполняет логин и возвращает bearer token."""
 	response = await client.post(
-		'/api/v1/auth/login',
+		url='/api/v1/auth/login',
 		json={'email': email, 'password': password},
 	)
 	assert response.status_code == HTTPStatus.OK

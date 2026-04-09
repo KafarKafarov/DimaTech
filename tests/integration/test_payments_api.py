@@ -10,7 +10,7 @@ from tests.utils import auth_headers, authenticate, build_webhook_body
 async def test_hook_bad_sig(client: AsyncClient) -> None:
 	"""Неверная подпись должна приводить к 400."""
 	response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json={
 			'transaction_id': 'tx-invalid-signature',
 			'user_id': 1,
@@ -27,7 +27,7 @@ async def test_hook_bad_sig(client: AsyncClient) -> None:
 async def test_hook_unknown_user(client: AsyncClient) -> None:
 	"""Вебхук для неизвестного пользователя должен возвращать 404."""
 	response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json=build_webhook_body(
 			transaction_id='tx-unknown-user',
 			user_id=99,
@@ -44,7 +44,7 @@ async def test_hook_unknown_user(client: AsyncClient) -> None:
 async def test_hook_create_account(client: AsyncClient) -> None:
 	"""Вебхук должен создавать отсутствующий счет и фиксировать платеж."""
 	response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json=build_webhook_body(
 			transaction_id='tx-create-account',
 			user_id=1,
@@ -64,11 +64,11 @@ async def test_hook_create_account(client: AsyncClient) -> None:
 	)
 	headers = auth_headers(token=user_token)
 	accounts_response = await client.get(
-		'/api/v1/users/me/accounts',
+		url='/api/v1/users/me/accounts',
 		headers=headers,
 	)
 	payments_response = await client.get(
-		'/api/v1/users/me/payments',
+		url='/api/v1/users/me/payments',
 		headers=headers,
 	)
 
@@ -91,8 +91,14 @@ async def test_hook_idempotent(client: AsyncClient) -> None:
 		secret_key='test-payment-secret',
 	)
 
-	first_response = await client.post('/api/v1/payments/webhook', json=payload)
-	second_response = await client.post('/api/v1/payments/webhook', json=payload)
+	first_response = await client.post(
+		url='/api/v1/payments/webhook',
+		json=payload,
+	)
+	second_response = await client.post(
+		url='/api/v1/payments/webhook',
+		json=payload,
+	)
 
 	assert first_response.status_code == HTTPStatus.OK
 	assert first_response.json()['status'] == 'processed'
@@ -106,11 +112,11 @@ async def test_hook_idempotent(client: AsyncClient) -> None:
 	)
 	headers = auth_headers(token=user_token)
 	accounts_response = await client.get(
-		'/api/v1/users/me/accounts',
+		url='/api/v1/users/me/accounts',
 		headers=headers,
 	)
 	payments_response = await client.get(
-		'/api/v1/users/me/payments',
+		url='/api/v1/users/me/payments',
 		headers=headers,
 	)
 
@@ -124,7 +130,7 @@ async def test_hook_idempotent(client: AsyncClient) -> None:
 async def test_hook_account_conflict(client: AsyncClient) -> None:
 	"""Счет другого пользователя не должен быть доступен в чужом вебхуке."""
 	response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json=build_webhook_body(
 			transaction_id='tx-account-conflict',
 			user_id=2,
@@ -144,7 +150,7 @@ async def test_hook_account_conflict(client: AsyncClient) -> None:
 async def test_hook_bad_amount(client: AsyncClient) -> None:
 	"""Отрицательная сумма должна отсеиваться валидацией схемы."""
 	response = await client.post(
-		'/api/v1/payments/webhook',
+		url='/api/v1/payments/webhook',
 		json={
 			'transaction_id': 'tx-negative',
 			'user_id': 1,

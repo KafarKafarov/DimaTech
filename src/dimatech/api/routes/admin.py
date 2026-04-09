@@ -27,7 +27,7 @@ def build_users_payload(*, users: list[User]) -> list[UserWithAccountsRead]:
 
 
 @router.get(
-	'/users',
+	path='/users',
 	response_model=list[UserWithAccountsRead],
 	status_code=status.HTTP_200_OK,
 	summary='Получение списка пользователей',
@@ -35,7 +35,6 @@ def build_users_payload(*, users: list[User]) -> list[UserWithAccountsRead]:
 		'Возвращает всех пользователей вместе '
 		'с привязанными счетами и балансами.'
 	),
-	response_description='Список пользователей со счетами.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',
@@ -58,12 +57,11 @@ async def list_users(
 
 
 @router.post(
-	'/users',
+	path='/users',
 	response_model=UserRead,
 	status_code=status.HTTP_201_CREATED,
 	summary='Создание пользователя',
 	description='Создает нового пользователя с ролью `user`.',
-	response_description='Созданный пользователь.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',
@@ -95,12 +93,11 @@ async def create_user(
 
 
 @router.patch(
-	'/users/{user_id}',
+	path='/users/{user_id}',
 	response_model=UserRead,
 	status_code=status.HTTP_200_OK,
 	summary='Обновление пользователя',
 	description='Частично обновляет данные пользователя по идентификатору.',
-	response_description='Обновленные данные пользователя.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',
@@ -137,11 +134,10 @@ async def update_user(
 
 
 @router.delete(
-	'/users/{user_id}',
+	path='/users/{user_id}',
 	status_code=status.HTTP_204_NO_CONTENT,
 	summary='Удаление пользователя',
 	description='Удаляет пользователя по идентификатору.',
-	response_description='Пользователь успешно удален.',
 	responses={
 		status.HTTP_401_UNAUTHORIZED: build_error_response(
 			description='Пользователь не аутентифицирован или токен недействителен.',
